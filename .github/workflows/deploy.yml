@@ -1,0 +1,27 @@
+
+name: Secure Pipeline Secrets
+
+on:
+  workflow_dispatch:
+
+jobs:
+  security-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify secret configuration
+        env:
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          if [ -z "$DB_USERNAME" ] || [ -z "$DB_PASSWORD" ]; then
+            echo "Required secrets are missing"
+            exit 1
+          fi
+          echo "Database secrets are configured"
+
+      - name: Display security status
+        run: echo "No credential values were printed"
